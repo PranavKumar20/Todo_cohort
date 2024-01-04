@@ -1,8 +1,10 @@
 const express = require('express');
 const {createTodo,updateTodo} = require("./types");
 const {todo} = require("./db")
+const cors = require('cors');
 
 const app = express();
+app.use(cors());
 const port = 3000;
 app.use(express.json());
 
@@ -10,7 +12,7 @@ app.post("/todo",async function(req,res){
     const createPayload = req.body;
     const parsedPayload = createTodo.safeParse(createPayload);
     if(!parsedPayload.success){
-        req.status(411).json({
+        res.status(411).json({
             msg: "wromg input"
         })
         return;
