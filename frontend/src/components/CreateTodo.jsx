@@ -1,10 +1,40 @@
-import { useState } from "react"
+import { useEffect,useState } from "react"
+// import './A.css'
 
-
-export function CreateTodo(){
+export function CreateTodo({onAddTodo}){
 
     const [title,setTitle] = useState("");
     const [description,setDescription] = useState("");
+    const [showMessage, setShowMessage] = useState(false);
+
+    function addTodo(){
+        fetch("http://localhost:3000/todo",{
+            method: "POST",
+            body: JSON.stringify({
+                title: title,
+                description: description
+            }),
+            headers:{
+                "Content-type": "application/json"
+            },
+        })
+        .then(async function(res){
+            const json = await res.json();
+            console.log(json);
+            // alert("Todo Added");
+            setShowMessage(true);
+            onAddTodo();
+        })
+    }
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+          setShowMessage(false);
+        }, 1000);
+    
+        return () => clearTimeout(timeoutId);
+      }, [showMessage]);
+
 
     return  <div>
         <input style={{
@@ -27,23 +57,12 @@ export function CreateTodo(){
         <button style={{
                 padding: 10,
                 margin:10
-            }} onClick={()=>{
-                fetch("http://localhost:3000/todo",{
-                    method: "POST",
-                    body: JSON.stringify({
-                        title: title,
-                        description:description
-                    }),
-                    headers: {
-                        "Content-type": "application/json"
-                    }
-                })
-                .then(async function(res){
-                    const json= await res.json();
-                    console.log(json);
-                    alert("Todo added");
-                })
-            }}
+            }} 
+            onClick={addTodo}
             >Add a todo</button>
+            {showMessage && (<div style={{
+                alignItems: "center",
+                justifyContent: "center"
+            }} className="message">Todo added</div>)}
     </div>
 }

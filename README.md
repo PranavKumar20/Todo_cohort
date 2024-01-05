@@ -8,3 +8,6 @@ This application conatins following simple features
 
 ##status
 - backend completed
+
+
+checking for push pull
